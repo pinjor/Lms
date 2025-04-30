@@ -1,4 +1,4 @@
-// Define a structured AuthState class
+// lib/features/auth/domain/auth_state.dart
 import 'package:bjp_app/features/auth/domain/login_response_model.dart';
 
 enum AuthStatus { unknown, authenticated, unauthenticated }
@@ -16,8 +16,9 @@ class AuthState {
     required this.status,
   });
 
-  // bool get isLoggedIn => user != null && user?.token != null; // previous implementation
+  // Boolean to check if the user is logged in
   bool get isLoggedIn => status == AuthStatus.authenticated;
 
+  // Getter to check if the user is admin
   bool get isAdmin => user?.user?.isAdmin == 1;
 }

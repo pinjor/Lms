@@ -1,3 +1,5 @@
+// lib/features/auth/presentation/screens/login_screen.dart
+
 import 'dart:convert';
 
 import 'package:bjp_app/config/app_colors.dart';
@@ -12,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
-
+import '../../domain/auth_state.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/constants/route_path.dart';
 import '../../../../core/utils/utils.dart';
@@ -27,7 +29,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _emailOrMobileController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
@@ -61,9 +63,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         final response = await _dioClient.post(
           uri.toString(),
           data:
-              _isAdminLogin
-                  ? {'email': mobileOrEmail, 'password': password}
-                  : {'phone_number': mobileOrEmail, 'password': password},
+          _isAdminLogin
+              ? {'email': mobileOrEmail, 'password': password}
+              : {'phone_number': mobileOrEmail, 'password': password},
         );
 
         lgr.i('Login response received: ${response.data}');
@@ -71,8 +73,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         final loginResponse = LoginResponseModel.fromJson(response.data);
         if (response.statusCode == 200) {
           lgr.i('Token received: ${loginResponse.token}');
+
+          // Save token and user data
           token = loginResponse.token!;
           user = jsonEncode(loginResponse.user?.toJson());
+
+          // Directly update the auth state in the AuthController after a successful login
+          ref.read(authControllerProvider.notifier).state = AuthState(
+            user: loginResponse,
+            status: AuthStatus.authenticated,
+          );
+
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -129,7 +140,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         fontSize: 28.0,
                         fontWeight: FontWeight.bold,
                       ),
-                      //Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 50.0),
                     TextFormField(
@@ -140,9 +150,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         hintText: 'এখানে লিখুন',
                       ),
                       keyboardType:
-                          _isAdminLogin
-                              ? TextInputType.emailAddress
-                              : TextInputType.phone,
+                      _isAdminLogin
+                          ? TextInputType.emailAddress
+                          : TextInputType.phone,
                       validator: (String? value) {
                         if (value?.trim().isEmpty ?? true) {
                           return _isAdminLogin
@@ -186,13 +196,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            //GoRouter.of(context).push(RoutePath.enterEmailScreenPath);
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EnterEmailScreen(),
-                                ),
-                              );
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EnterEmailScreen(),
+                              ),
+                            );
                           },
                           child: const Text(
                             'পাসওয়ার্ড ভুলে গেছেন ?',
@@ -227,15 +236,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         children: [
                           const Text('অ্যাকাউন্ট নেই? এখনই'),
                           TextButton(
-                            onPressed: ()
-                            {
+                            onPressed: () {
                               context.pushReplacement(RoutePath.enterEmailScreenPath);
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => RegisterScreen(),
-                              //   ),
-                              // );
                             },
                             child: const Text('মেম্বার হোন'),
                           ),

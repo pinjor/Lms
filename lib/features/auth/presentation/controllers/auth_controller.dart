@@ -1,3 +1,5 @@
+// lib/features/auth/presentation/controllers/auth_controller.dart
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -32,13 +34,11 @@ class AuthController extends _$AuthController {
     if (token != null && userJson != null) {
       lgr.i('User already logged in, token: $token');
       final user = User.fromJson(jsonDecode(userJson));
-      final loginResonse = LoginResponseModel(user: user, token: token);
-      _authRepository.setAuthStateController = loginResonse;
-      // user admin or not
-      lgr.i('user is: ${loginResonse.user?.isAdmin}');
-      state = AuthState(user: loginResonse, status: AuthStatus.authenticated);
+      final loginResponse = LoginResponseModel(user: user, token: token);
+      _authRepository.setAuthStateController = loginResponse;
+      state = AuthState(user: loginResponse, status: AuthStatus.authenticated);
     } else {
-      state = AuthState(status: AuthStatus.unauthenticated);
+      state = AuthState(status: AuthStatus.unauthenticated); // Default to unauthenticated state
       lgr.i('User not logged in yet');
     }
   }
@@ -56,11 +56,13 @@ class AuthController extends _$AuthController {
         isAdmin: isAdmin,
       );
       if (result != null && result.token != null) {
-        state = AuthState(user: result, status: AuthStatus.authenticated);
+        // Set the user and authenticated status after a successful login
+        state = AuthState(
+          user: result,
+          status: AuthStatus.authenticated,
+        );
       } else {
         state = AuthState(
-          // error: 'Login failed: Invalid credentials'
-          // message in bengali
           error: 'লগইন ব্যর্থ: ভুল মোবাইল নম্বর বা পাসওয়ার্ড',
           status: AuthStatus.unauthenticated,
         );
@@ -74,15 +76,15 @@ class AuthController extends _$AuthController {
   }
 
   void register(
-    BuildContext context, {
-    required RegisterInputModel data,
-  }) async {
+      BuildContext context, {
+        required RegisterInputModel data,
+      }) async {
     state = AuthState(isLoading: true, status: AuthStatus.unauthenticated);
 
     final result = await _authRepository.register(data: data);
 
     result.fold(
-      (failure) async {
+          (failure) async {
         state = AuthState(
           error: 'Registration error: ${failure.message}',
           status: AuthStatus.unauthenticated,
@@ -94,7 +96,7 @@ class AuthController extends _$AuthController {
           title: 'নিবন্ধন ব্যর্থ',
         );
       },
-      (r) {
+          (r) {
         state = AuthState(status: AuthStatus.unauthenticated);
         showMessageToUser(
           context: context,
@@ -111,7 +113,7 @@ class AuthController extends _$AuthController {
     final result = await _authRepository.sendOTPToEmail(email: email);
 
     result.fold(
-      (failure) async {
+          (failure) async {
         state = AuthState(
           error: 'Send OTP error: ${failure.message}',
           status: AuthStatus.unauthenticated,
@@ -126,7 +128,7 @@ class AuthController extends _$AuthController {
           title: 'ওটিপি পাঠাতে ব্যর্থ হয়েছে',
         );
       },
-      (r) {
+          (r) {
         lgr.i('OTP sent successfully got response');
         state = AuthState(status: AuthStatus.unauthenticated);
         showMessageToUser(
@@ -145,14 +147,14 @@ class AuthController extends _$AuthController {
   }
 
   void verifyOTP(
-    BuildContext context, {
-    required String otp,
-    required String email,
-  }) async {
+      BuildContext context, {
+        required String otp,
+        required String email,
+      }) async {
     final result = await _authRepository.verifyOTP(otp: otp, email: email);
 
     result.fold(
-      (failure) async {
+          (failure) async {
         state = AuthState(
           error: 'Verify OTP error: ${failure.message}',
           status: AuthStatus.unauthenticated,
@@ -165,7 +167,7 @@ class AuthController extends _$AuthController {
           title: 'ওটিপি যাচাই করতে ব্যর্থ হয়েছে',
         );
       },
-      (r) {
+          (r) {
         state = AuthState(status: AuthStatus.unauthenticated);
         showMessageToUser(
           context: context,
@@ -183,11 +185,11 @@ class AuthController extends _$AuthController {
   }
 
   void resetPassword(
-    BuildContext context, {
-    required String password,
-    required String email,
-    required String otp,
-  }) async {
+      BuildContext context, {
+        required String password,
+        required String email,
+        required String otp,
+      }) async {
     final result = await _authRepository.resetPassword(
       email: email,
       otp: otp,
@@ -195,7 +197,7 @@ class AuthController extends _$AuthController {
     );
 
     result.fold(
-      (failure) async {
+          (failure) async {
         state = AuthState(
           error: 'Reset password error: ${failure.message}',
           status: AuthStatus.unauthenticated,
@@ -208,7 +210,7 @@ class AuthController extends _$AuthController {
           title: 'পাসওয়ার্ড রিসেট করতে ব্যর্থ হয়েছে',
         );
       },
-      (r) {
+          (r) {
         state = AuthState(status: AuthStatus.unauthenticated);
         showMessageToUser(
           context: context,
