@@ -10,6 +10,7 @@ import '../../../core/constants/api_constants.dart';
 import '../../../core/failure.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/utils/utils.dart';
+import '../../../dataRepository/global.dart';
 
 part 'profile_repository.g.dart';
 
@@ -41,7 +42,7 @@ class ProfileRepository {
         path: ApiConstants.getUserProfile,
       );
 
-      final token = await _secureStorage.read(key: 'token');
+       // final token = await _secureStorage.read(key: 'token');
       lgr.w('got token: $token');
 
       final result = await _dioClient.get(
@@ -49,7 +50,7 @@ class ProfileRepository {
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            'Authorization': 'Bearer ' + token!,
           },
         ),
       );
@@ -86,7 +87,7 @@ class ProfileRepository {
         host: ApiConstants.baseUrl,
         path: ApiConstants.updateProfile,
       );
-      final token = await _secureStorage.read(key: 'token');
+       // final token = await _secureStorage.read(key: 'token');
       lgr.w(
         'sending data: name=$name, email=$email, mobile=$mobile, divisionId=$divisionId, districtId=$districtId, upazilaId=$upazilaId',
       );
@@ -104,7 +105,8 @@ class ProfileRepository {
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            // 'Authorization': 'Bearer ' + token!,
+            'Authorization': 'Bearer ' + token!,
           },
         ),
       );

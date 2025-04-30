@@ -10,6 +10,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/providers/providers.dart';
+import '../../../dataRepository/global.dart';
 
 part 'home_repository.g.dart';
 
@@ -39,13 +40,14 @@ class HomeRepository {
             path: ApiConstants.getMemberRecentNotification,
           ).toString();
 
-      final token = await _secureStorage.read(key: 'token');
+       // final token = await _secureStorage.read(key: 'token');
       final response = await _dioClient.get(
         uri,
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            // 'Authorization': 'Bearer ' + token!,
+           'Authorization': 'Bearer ' + token!,
           },
         ),
       );

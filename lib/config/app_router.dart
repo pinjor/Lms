@@ -1,6 +1,7 @@
 import 'package:bjp_app/config/route_refresh.dart';
 import 'package:bjp_app/core/constants/route_path.dart';
 import 'package:bjp_app/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:bjp_app/features/auth/presentation/screens/otp_verification_screen.dart';
 import 'package:bjp_app/features/auth/presentation/screens/register_screen.dart';
 import 'package:bjp_app/features/chat/presentation/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
@@ -66,9 +67,7 @@ GoRouter appRouter(Ref ref) {
         parentNavigatorKey: _rootNavKey,
         path: RoutePath.loginPath,
         pageBuilder:
-            (context, state) => MaterialPage(
-              child: const LoginScreen(),
-            ),
+            (context, state) => MaterialPage(child: const LoginScreen()),
       ),
 
       GoRoute(
@@ -82,7 +81,17 @@ GoRouter appRouter(Ref ref) {
         parentNavigatorKey: _rootNavKey,
         path: RoutePath.enterEmailScreenPath,
         pageBuilder:
-            (context, state) => MaterialPage(child: const EnterEmailScreen()),
+            (context, state) => MaterialPage(
+              child: const EnterEmailScreen(),
+              key: state.pageKey,
+            ),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavKey,
+        path: RoutePath.verifyOtpScreenPath,
+        pageBuilder:
+            (context, state) =>
+                MaterialPage(child: const OtpVeificationScreen(email: '')),
       ),
 
       // GoRoute(

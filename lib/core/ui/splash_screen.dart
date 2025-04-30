@@ -1,4 +1,5 @@
-import 'package:bjp_app/app.dart';
+
+import 'package:bjp_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../config/app_colors.dart';
@@ -29,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
       // Navigate to main app structure
       Navigator.of(
         context,
-      ).pushReplacement(MaterialPageRoute(builder: (_) => MyApp()));
+      ).pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
     }
   }
 

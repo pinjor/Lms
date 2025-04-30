@@ -1,4 +1,5 @@
 // used for logging value in the terminal
+import 'package:bjp_app/config/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -47,16 +48,24 @@ void showLogoutDialog({
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: Text('লগআউট'),
+        title: Text(
+          'লগআউট',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: AppColors.themeColor),
+        ),
+
         content: Text('আপনি কি নিশ্চিত যে আপনি লগআউট করতে চান?'),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text('বাতিল'),
+            child: Text('বাতিল', style: TextStyle(color: AppColors.themeColor)),
           ),
-          TextButton(onPressed: onPressed, child: Text('লগআউট')),
+          TextButton(
+            onPressed: onPressed,
+            child: Text('লগআউট', style: TextStyle(color: AppColors.themeColor)),
+          ),
         ],
       );
     },

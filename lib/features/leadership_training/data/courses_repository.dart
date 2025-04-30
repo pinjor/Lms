@@ -9,6 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/failure.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/type_defs.dart';
+import '../../../dataRepository/global.dart';
 
 part 'courses_repository.g.dart';
 
@@ -41,14 +42,15 @@ class CoursesRepository {
         path: ApiConstants.getAllCourses,
       );
 
-      final token = await _secureStorage.read(key: 'token');
+       // final token = await _secureStorage.read(key: 'token');
 
       final response = await _dioClient.get(
         uri.toString(),
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            // 'Authorization': 'Bearer ' + token!,
+            'Authorization': 'Bearer ' + token!,
           },
         ),
       );

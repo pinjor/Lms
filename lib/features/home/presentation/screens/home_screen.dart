@@ -1,6 +1,8 @@
 import 'package:bjp_app/config/app_colors.dart';
+import 'package:bjp_app/config/app_theme_data.dart';
 import 'package:bjp_app/core/ui/custom_loader.dart';
 import 'package:bjp_app/core/utils/utils.dart';
+import 'package:bjp_app/dataRepository/global.dart';
 import 'package:bjp_app/features/announcement/presentation/screens/announcement_screen.dart';
 import 'package:bjp_app/features/auth/domain/auth_state.dart';
 import 'package:bjp_app/features/auth/presentation/controllers/auth_controller.dart';
@@ -151,18 +153,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _logoutUser() {
-    ref.read(authControllerProvider.notifier).logout();
+    // ref.read(authControllerProvider.notifier).logout();
     //Navigator.pop(context);
     if (Navigator.canPop(context)) {
+      print("1");
       Navigator.pop(context);
-    } else {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
       );
+      user = "";
+      token = "";
+    } else {
+      print("2");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+      print("3");
       Navigator.pop(context);
     }
     if (Navigator.of(context, rootNavigator: true).canPop()) {
+      print("4");
       Navigator.of(context, rootNavigator: true).pop(); // Closes dialog
     }
 
@@ -306,185 +318,189 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         }
       },
 
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Text(
-            _appBarTitle,
-            style: TextStyle(color: Colors.black, fontSize: 18),
-          ),
-          centerTitle: true,
-          actions: [
-            TextButton(
-              onPressed:
-                  () => showLogoutDialog(
-                    context: context,
-                    onPressed: () => _logoutUser(),
-                  ),
-              child: Text(
-                'Logout',
-                style: TextStyle(color: AppColors.themeColor, fontSize: 14),
-              ),
+      child: Theme(
+        data: AppThemeData.lightThemeData,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Text(
+              _appBarTitle,
+              style: TextStyle(color: Colors.black, fontSize: 18),
             ),
-          ],
-        ),
-        body: SafeArea(
-          child:
-              _drawerOptions(
-                isAdmin,
-                authState,
-                events: eventListState,
-                discussions: discussionListState,
-              )[_selectedIndex],
-        ),
-        floatingActionButton:
-            _selectedIndex == 0
-                ? FloatingActionButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => ChatPage(userInfo: '1', name: "Admin"),
-                      ),
-                    );
-                  },
-                  child: Icon(Icons.chat, color: Colors.white),
-                  backgroundColor: AppColors.themeColor,
-                )
-                : null,
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        drawer: Drawer(
-          width: 250,
-          child: ListView(
-            children: [
-              DrawerHeader(child: AppLogoWidget(height: 10, width: 10)),
-              ListTile(
-                leading: Icon(Icons.dashboard),
-                title: Text('হোম'),
-                selected: _selectedIndex == 0,
-                onTap: () {
-                  _onItemTapped(0);
-                  Navigator.pop(context);
-                },
+            centerTitle: true,
+            actions: [
+              TextButton(
+                onPressed:
+                    () => showLogoutDialog(
+                      context: context,
+                      onPressed: () => _logoutUser(),
+                    ),
+                child: Text(
+                  'Logout',
+                  style: TextStyle(color: AppColors.themeColor, fontSize: 14),
+                ),
               ),
-              // announcements
-              if (isAdmin) ...[
-                ExpansionTile(
-                  leading: Icon(Icons.announcement),
-                  title: Text('ঘোষণা'),
-                  children: [
-                    ListTile(
-                      leading: Icon(Icons.list),
-                      title: Text('ঘোষণা তালিকা'),
-                      selected: _selectedIndex == 1,
-                      onTap: () {
-                        _onItemTapped(1);
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.add),
-                      title: Text('ঘোষণা তৈরি করুন'),
-                      selected: _selectedIndex == 2,
-                      onTap: () {
-                        _onItemTapped(2);
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
-                ListTile(
-                  leading: Icon(Icons.person_4),
-                  title: Text('সদস্য'),
-                  selected: _selectedIndex == 3,
-                  onTap: () {
-                    _onItemTapped(3);
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.schedule_sharp),
-                  title: Text('অনুষ্ঠানের সময়'),
-                  selected: _selectedIndex == 4,
-                  onTap: () {
-                    _onItemTapped(4);
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.chat),
-                  title: Text('চ্যাট তালিকা'),
-                  selected: _selectedIndex == 5,
-                  onTap: () {
-                    _onItemTapped(5);
-                    Navigator.pop(context);
-                  },
-                ),
-              ] else ...[
-                ListTile(
-                  leading: Icon(Icons.announcement),
-                  title: Text('ঘোষণা'),
-                  selected: _selectedIndex == 1,
-                  onTap: () {
-                    _onItemTapped(1);
-                    Navigator.pop(context);
-                  },
-                ),
-
-                ListTile(
-                  leading: Icon(Icons.picture_as_pdf),
-                  title: Text('আমাদের সংবিধান'),
-                  selected: _selectedIndex == 2,
-                  onTap: () {
-                    _onItemTapped(2);
-                    Navigator.pop(context);
-                  },
-                ),
-                ExpansionTile(
-                  leading: Icon(Icons.perm_media),
-                  title: Text('মিডিয়া'),
-                  children: [
-                    ListTile(
-                      leading: Icon(Icons.picture_in_picture_sharp),
-                      title: Text('ছবি'),
-                      selected: _selectedIndex == 3,
-                      onTap: () {
-                        _onItemTapped(3);
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.video_collection),
-                      title: Text('ভিডিও'),
-                      selected: _selectedIndex == 4,
-                      onTap: () {
-                        _onItemTapped(4);
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
-                ListTile(
-                  leading: Icon(Icons.edit),
-                  title: Text('প্রোফাইল পরিবর্তন'),
-                  selected: _selectedIndex == 5,
-                  onTap: () {
-                    _onItemTapped(5);
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.chat),
-                  title: Text('চ্যাট উইথ আন্দালিব'),
-                  selected: _selectedIndex == 6,
-                  onTap: () {
-                    _onItemTapped(6);
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
             ],
+          ),
+          body: SafeArea(
+            child:
+                _drawerOptions(
+                  isAdmin,
+                  authState,
+                  events: eventListState,
+                  discussions: discussionListState,
+                )[_selectedIndex],
+          ),
+          floatingActionButton:
+              _selectedIndex == 0
+                  ? FloatingActionButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) =>
+                                  ChatPage(userInfo: '1', name: "Admin"),
+                        ),
+                      );
+                    },
+                    child: Icon(Icons.chat, color: Colors.white),
+                    backgroundColor: AppColors.themeColor,
+                  )
+                  : null,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          drawer: Drawer(
+            width: 250,
+            child: ListView(
+              children: [
+                DrawerHeader(child: AppLogoWidget(height: 10, width: 10)),
+                ListTile(
+                  leading: Icon(Icons.dashboard),
+                  title: Text('হোম'),
+                  selected: _selectedIndex == 0,
+                  onTap: () {
+                    _onItemTapped(0);
+                    Navigator.pop(context);
+                  },
+                ),
+                // announcements
+                if (isAdmin) ...[
+                  ExpansionTile(
+                    leading: Icon(Icons.announcement),
+                    title: Text('ঘোষণা'),
+                    children: [
+                      ListTile(
+                        leading: Icon(Icons.list),
+                        title: Text('ঘোষণা তালিকা'),
+                        selected: _selectedIndex == 1,
+                        onTap: () {
+                          _onItemTapped(1);
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.add),
+                        title: Text('ঘোষণা তৈরি করুন'),
+                        selected: _selectedIndex == 2,
+                        onTap: () {
+                          _onItemTapped(2);
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.person_4),
+                    title: Text('সদস্য'),
+                    selected: _selectedIndex == 3,
+                    onTap: () {
+                      _onItemTapped(3);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.schedule_sharp),
+                    title: Text('অনুষ্ঠানের সময়'),
+                    selected: _selectedIndex == 4,
+                    onTap: () {
+                      _onItemTapped(4);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.chat),
+                    title: Text('চ্যাট তালিকা'),
+                    selected: _selectedIndex == 5,
+                    onTap: () {
+                      _onItemTapped(5);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ] else ...[
+                  ListTile(
+                    leading: Icon(Icons.announcement),
+                    title: Text('ঘোষণা'),
+                    selected: _selectedIndex == 1,
+                    onTap: () {
+                      _onItemTapped(1);
+                      Navigator.pop(context);
+                    },
+                  ),
+
+                  ListTile(
+                    leading: Icon(Icons.picture_as_pdf),
+                    title: Text('আমাদের সংবিধান'),
+                    selected: _selectedIndex == 2,
+                    onTap: () {
+                      _onItemTapped(2);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ExpansionTile(
+                    leading: Icon(Icons.perm_media),
+                    title: Text('মিডিয়া'),
+                    children: [
+                      ListTile(
+                        leading: Icon(Icons.picture_in_picture_sharp),
+                        title: Text('ছবি'),
+                        selected: _selectedIndex == 3,
+                        onTap: () {
+                          _onItemTapped(3);
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.video_collection),
+                        title: Text('ভিডিও'),
+                        selected: _selectedIndex == 4,
+                        onTap: () {
+                          _onItemTapped(4);
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.edit),
+                    title: Text('প্রোফাইল পরিবর্তন'),
+                    selected: _selectedIndex == 5,
+                    onTap: () {
+                      _onItemTapped(5);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.chat),
+                    title: Text('চ্যাট উইথ আন্দালিব'),
+                    selected: _selectedIndex == 6,
+                    onTap: () {
+                      _onItemTapped(6);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ],
+            ),
           ),
         ),
       ),

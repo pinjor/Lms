@@ -73,7 +73,7 @@ class AuthRepository {
       final loginResponse = LoginResponseModel.fromJson(response.data);
       if (response.statusCode == 200) {
         lgr.i('Token received: ${loginResponse.token}');
-        await _saveUser(loginResponse);
+        await saveUser(loginResponse);
         _authStateController.value = loginResponse;
         return loginResponse;
       } else {
@@ -271,7 +271,7 @@ class AuthRepository {
     return await _secureStorage.read(key: 'user');
   }
 
-  Future<void> _saveUser(LoginResponseModel response) async {
+  Future<void> saveUser(LoginResponseModel response) async {
     await _secureStorage.write(key: 'token', value: response.token);
     await _secureStorage.write(
       key: 'user',

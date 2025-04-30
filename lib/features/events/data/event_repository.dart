@@ -9,6 +9,7 @@ import '../../../core/failure.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/type_defs.dart';
 import '../../../core/utils/utils.dart';
+import '../../../dataRepository/global.dart';
 import '../domain/event_model.dart';
 
 part 'event_repository.g.dart';
@@ -39,15 +40,16 @@ class EventRepository {
         path: ApiConstants.getAllEvents,
       );
       lgr.i('fetching events from: ${uri.toString()}');
-      final token = await _secureStorage.read(key: 'token');
-      lgr.e('token: $token');
+      //  // final token = await _secureStorage.read(key: 'token');
+      // lgr.e('token: $token');
       lgr.i('sending request to fetch events to ${uri.toString()}');
       final response = await _dioClient.get(
         uri.toString(),
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            // 'Authorization': 'Bearer ' + token!,
+           'Authorization': 'Bearer ' + token!,
           },
         ),
       );

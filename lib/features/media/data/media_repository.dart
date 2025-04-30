@@ -11,6 +11,7 @@ import '../../../core/failure.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/type_defs.dart';
 import '../../../core/utils/utils.dart';
+import '../../../dataRepository/global.dart';
 
 part 'media_repository.g.dart';
 
@@ -43,7 +44,7 @@ class MediaRepository {
         path: ApiConstants.getAllVidoes,
       );
 
-      final token = await _secureStorage.read(key: 'token');
+       // final token = await _secureStorage.read(key: 'token');
 
       final response = await _dioClient.get(
         uri.toString(),
@@ -51,7 +52,7 @@ class MediaRepository {
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            'Authorization': 'Bearer ' + token!,
           },
         ),
       );
@@ -79,13 +80,13 @@ class MediaRepository {
         path: ApiConstants.getAllPhotos,
       );
       lgr.i('uri: $uri');
-      final token = await _secureStorage.read(key: 'token');
+       // final token = await _secureStorage.read(key: 'token');
       final response = await _dioClient.get(
         uri.toString(),
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            'Authorization': 'Bearer ' + token!,
           },
         ),
       );

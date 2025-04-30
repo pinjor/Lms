@@ -9,6 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/providers/providers.dart';
 import '../../../core/utils/utils.dart';
+import '../../../dataRepository/global.dart';
 import '../domain/announcement.dart';
 
 part 'announcement_repository.g.dart';
@@ -40,14 +41,15 @@ class AnnouncementRepository {
         path: ApiConstants.getAllAnnouncements,
       );
 
-      final token = await _secureStorage.read(key: 'token');
+      //  // final token = await _secureStorage.read(key: 'token');
       lgr.i('uri is: $uri');
       final response = await _dioClient.get(
         uri.toString(),
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            // 'Authorization': 'Bearer ' + token!,
+           'Authorization': 'Bearer ' + token!,
           },
         ),
       );
@@ -84,14 +86,14 @@ class AnnouncementRepository {
         path: '${ApiConstants.getAllAnnouncements}/$id',
       );
 
-      final token = await _secureStorage.read(key: 'token');
+       // final token = await _secureStorage.read(key: 'token');
 
       final response = await _dioClient.get(
         uri.toString(),
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            'Authorization': 'Bearer ' + token!,
           },
         ),
       );
@@ -122,7 +124,7 @@ class AnnouncementRepository {
         path: ApiConstants.getAllAnnouncements,
       );
 
-      final token = await _secureStorage.read(key: 'token');
+       // final token = await _secureStorage.read(key: 'token');
       lgr.i('uri is: $uri');
       final response = await _dioClient.post(
         uri.toString(),
@@ -130,7 +132,7 @@ class AnnouncementRepository {
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            'Authorization': 'Bearer ' + token!,
           },
         ),
       );
@@ -173,14 +175,14 @@ class AnnouncementRepository {
         queryParameters: {'content': announcement, 'division_id': divisionId},
       );
 
-      final token = await _secureStorage.read(key: 'token');
+       // final token = await _secureStorage.read(key: 'token');
 
       final response = await _dioClient.put(
         uri.toString(),
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            'Authorization': 'Bearer ' + token!,
           },
         ),
       );
@@ -206,14 +208,14 @@ class AnnouncementRepository {
         path: '${ApiConstants.getAllAnnouncements}/$id',
       );
 
-      final token = await _secureStorage.read(key: 'token');
+       // final token = await _secureStorage.read(key: 'token');
 
       final response = await _dioClient.delete(
         uri.toString(),
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            'Authorization': 'Bearer ' + token!,
           },
         ),
       );

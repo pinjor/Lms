@@ -15,7 +15,7 @@ class AppThemeData {
       ),
       textTheme: const TextTheme(
         titleLarge: TextStyle(
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.bold,
           fontSize: 28.0,
           letterSpacing: 1.7,
           color: Colors.black,

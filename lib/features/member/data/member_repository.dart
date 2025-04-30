@@ -9,6 +9,7 @@ import '../../../core/failure.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/type_defs.dart';
 import '../../../core/utils/utils.dart';
+import '../../../dataRepository/global.dart';
 import '../domain/member_model.dart';
 
 part 'member_repository.g.dart';
@@ -47,13 +48,14 @@ class MemberRepository {
         queryParameters: {'user_id': id},
       );
 
-      final token = await _secureStorage.read(key: 'token');
+      //  // final token = await _secureStorage.read(key: 'token');
       final response = await _dioClient.get(
         uri.toString(),
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            // 'Authorization': 'Bearer ' + token!,
+            'Authorization': 'Bearer ' + token!,
           },
         ),
       );
@@ -95,13 +97,13 @@ class MemberRepository {
         queryParameters: {'phone_number': mobile},
       );
 
-      final token = await _secureStorage.read(key: 'token');
+      // final token = await _secureStorage.read(key: 'token');
       final response = await _dioClient.get(
         uri.toString(),
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            'Authorization': 'Bearer ' + token!,
           },
         ),
       );
@@ -162,13 +164,13 @@ class MemberRepository {
         queryParameters: queryParams.isEmpty ? null : queryParams,
       );
 
-      final token = await _secureStorage.read(key: 'token');
+      // final token = await _secureStorage.read(key: 'token');
       final response = await _dioClient.get(
         uri.toString(),
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
+            'Authorization': 'Bearer ' + token!,
           },
         ),
       );
