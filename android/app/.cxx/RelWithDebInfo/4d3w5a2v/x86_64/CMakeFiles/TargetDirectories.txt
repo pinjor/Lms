@@ -1,0 +1,2 @@
+D:/sahajda bhai/flutter_bjp_apps/android/app/.cxx/RelWithDebInfo/4d3w5a2v/x86_64/CMakeFiles/edit_cache.dir
+D:/sahajda bhai/flutter_bjp_apps/android/app/.cxx/RelWithDebInfo/4d3w5a2v/x86_64/CMakeFiles/rebuild_cache.dir

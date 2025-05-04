@@ -1,32 +1,45 @@
 import 'package:bjp_app/core/constants/assets_path.dart';
 import 'package:flutter/material.dart';
 
-class first_home_screen_portion extends StatelessWidget {
-  const first_home_screen_portion({super.key});
+class FirstHomeScreenPortion extends StatelessWidget {
+  const FirstHomeScreenPortion({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Get screen width and height using MediaQuery
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    // Dynamically calculate font sizes based on screen width
+    double titleFontSize =
+        screenWidth * 0.05; // Adjust the percentage for title font size
+    double bodyFontSize =
+        screenWidth * 0.025; // Adjust the percentage for body font size
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        // First Container with text and padding
         Container(
-          height: 200,
-          width: 200,
+          height: screenHeight * 0.25, // Adjust height based on screen size
+          width: screenWidth * 0.60, // Adjust width based on screen size
           color: Colors.cyan,
           child: Padding(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.all(
+              screenWidth * 0.010,
+            ), // Padding relative to screen width
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   'পরিবর্তনে যোগ দিন',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
-                    fontSize: 18,
+                    fontSize: titleFontSize, // Dynamically adjusted font size
                   ),
                 ),
-                SizedBox(height: 10), // Adds space between the two text widgets
+                SizedBox(height: 8),
                 Text(
                   'আমাদের লক্ষ্য একটি এমন সমাজ গঠন করা যেখানে '
                   'প্রতিটি মানুষ সমান সুযোগ এবং মর্যাদা পাবে। আমরা বিশ্বাস করি যে '
@@ -34,7 +47,7 @@ class first_home_screen_portion extends StatelessWidget {
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w400,
-                    fontSize: 8,
+                    fontSize: bodyFontSize, // Dynamically adjusted font size
                   ),
                 ),
                 SizedBox(height: 3),
@@ -45,7 +58,7 @@ class first_home_screen_portion extends StatelessWidget {
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w400,
-                    fontSize: 8,
+                    fontSize: bodyFontSize, // Dynamically adjusted font size
                   ),
                 ),
               ],
@@ -53,17 +66,15 @@ class first_home_screen_portion extends StatelessWidget {
           ),
         ),
 
-        //SizedBox(width:2),
-        Image.asset(
-          AssetsPath.imagetwo,
-
-          height: 200,
-          width: 160,
-          fit: BoxFit.cover,
+        // Image with flexible size
+        Flexible(
+          child: Image.asset(
+            AssetsPath.imagetwo,
+            height: screenHeight * 0.25, // Dynamically adjust height
+            width: screenWidth * 0.4, // Dynamically adjust width
+            fit: BoxFit.cover, // Ensures the image scales nicely
+          ),
         ),
-
-        // Add some space between the image and text
-        // The text with background color
       ],
     );
   }

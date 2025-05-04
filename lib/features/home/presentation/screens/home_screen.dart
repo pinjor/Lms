@@ -515,7 +515,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          first_home_screen_portion(),
+          FirstHomeScreenPortion(),
 
           SizedBox(height: 15),
 

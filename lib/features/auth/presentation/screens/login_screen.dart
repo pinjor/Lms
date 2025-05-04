@@ -14,10 +14,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
-import '../../domain/auth_state.dart';
+
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/constants/route_path.dart';
 import '../../../../core/utils/utils.dart';
+import '../../domain/auth_state.dart';
 import '../../domain/login_response_model.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -29,7 +30,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _emailOrMobileController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
@@ -60,25 +61,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           path: _isAdminLogin ? ApiConstants.adminLogin : ApiConstants.login,
         );
         lgr.i('Login request sending to: ${uri.toString()}');
+
         final response = await _dioClient.post(
           uri.toString(),
           data:
-          _isAdminLogin
-              ? {'email': mobileOrEmail, 'password': password}
-              : {'phone_number': mobileOrEmail, 'password': password},
+              _isAdminLogin
+                  ? {'email': mobileOrEmail, 'password': password}
+                  : {'phone_number': mobileOrEmail, 'password': password},
         );
 
         lgr.i('Login response received: ${response.data}');
 
         final loginResponse = LoginResponseModel.fromJson(response.data);
         if (response.statusCode == 200) {
+          if (loginResponse.token == null) {
+            throw Exception('Authentication token missing in response');
+          }
+
           lgr.i('Token received: ${loginResponse.token}');
 
           // Save token and user data
           token = loginResponse.token!;
           user = jsonEncode(loginResponse.user?.toJson());
 
-          // Directly update the auth state in the AuthController after a successful login
+          // Update auth state
           ref.read(authControllerProvider.notifier).state = AuthState(
             user: loginResponse,
             status: AuthStatus.authenticated,
@@ -88,12 +94,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             context,
             MaterialPageRoute(builder: (context) => HomeScreen()),
           );
-        } else {
-          return null;
         }
+      } on DioException catch (e) {
+        lgr.e('Login error: ${e.message}');
+        String errorMessage = 'Login failed. Please try again.';
+
+        if (e.response != null) {
+          // Handle server-provided error message
+          final responseData = e.response!.data;
+          if (responseData is Map<String, dynamic>) {
+            errorMessage =
+                responseData['message'] ??
+                (e.response!.statusCode == 401
+                    ? 'মোবাইল নম্বর অথবা পাসওয়ার্ড সঠিক নয়'
+                    : errorMessage);
+          }
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
       } catch (e) {
-        print('Login error: $e');
-        return null;
+        lgr.e('Unexpected error: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন',
+            ),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+          ),
+        );
       }
     }
   }
@@ -150,9 +185,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         hintText: 'এখানে লিখুন',
                       ),
                       keyboardType:
-                      _isAdminLogin
-                          ? TextInputType.emailAddress
-                          : TextInputType.phone,
+                          _isAdminLogin
+                              ? TextInputType.emailAddress
+                              : TextInputType.phone,
                       validator: (String? value) {
                         if (value?.trim().isEmpty ?? true) {
                           return _isAdminLogin
@@ -237,7 +272,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           const Text('অ্যাকাউন্ট নেই? এখনই'),
                           TextButton(
                             onPressed: () {
-                              context.pushReplacement(RoutePath.enterEmailScreenPath);
+                              // context.pushReplacement(
+                              //   RoutePath.registerPath,
+                              // );
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RegisterScreen(),
+                                ),
+                              );
+
                             },
                             child: const Text('মেম্বার হোন'),
                           ),
