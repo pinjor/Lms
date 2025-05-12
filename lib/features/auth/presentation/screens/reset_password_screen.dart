@@ -1,5 +1,6 @@
 import 'package:bjp_app/config/app_theme_data.dart';
 import 'package:bjp_app/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:bjp_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -125,8 +126,20 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                   ),
                   SizedBox(height: 16.0),
                   ElevatedButton(
-                    onPressed: _setNewPassword,
-                    child: Text('পরবর্তী', style: TextStyle(color: Colors.white)),
+                    onPressed: () {
+                      _setNewPassword;
+                      // context.pushReplacement(
+                      //   RoutePath.registerPath,
+                      // );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
+                    },
+                    child: Text(
+                      'পরবর্তী',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),
