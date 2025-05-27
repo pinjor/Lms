@@ -9,7 +9,7 @@ import '../../../../core/database/district_sub_district_map.dart';
 import '../../../../core/database/division_district_map_data.dart';
 import '../../../../core/database/sub_district.dart';
 import '../../../../core/utils/utils.dart';
-import '../controllers/auth_controller.dart';
+import 'login_screen.dart'; // Make sure to import your LoginScreen
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -20,19 +20,14 @@ class RegisterScreen extends ConsumerStatefulWidget {
 
 class _SignUpScreenState extends ConsumerState<RegisterScreen> {
   final TextEditingController _nameController = TextEditingController();
-
   final TextEditingController _nidController = TextEditingController();
-
   final TextEditingController _emailController = TextEditingController();
-
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // isNumeric function
   bool isNumeric(String s) {
     return double.tryParse(s) != null;
   }
@@ -42,60 +37,46 @@ class _SignUpScreenState extends ConsumerState<RegisterScreen> {
   String? _selectedUpazilaId;
 
   void _registerUser() {
-    // if (_formKey.currentState!.validate()) {
-    FocusScope.of(context).unfocus();
+    if (_formKey.currentState!.validate()) {
+      FocusScope.of(context).unfocus();
 
-    final name = _nameController.text.trim();
-    final nid = _nidController.text.trim();
-    final email = _emailController.text.trim();
-    final dob = _dobController.text.trim();
-    final phoneNumber = _phoneNumberController.text.trim();
-    final password = _passwordController.text.trim();
-    final confirmPassword = _confirmPasswordController.text.trim();
+      // Just for debugging - print all values
+      final name = _nameController.text.trim();
+      final nid = _nidController.text.trim();
+      final email = _emailController.text.trim();
+      final dob = _dobController.text.trim();
+      final phoneNumber = _phoneNumberController.text.trim();
+      final password = _passwordController.text.trim();
+      final confirmPassword = _confirmPasswordController.text.trim();
 
-    lgr.i('''
-      all given values are:
+      lgr.i('''
+        Registration values:
+        name: $name
+        nid: $nid
+        email: $email
+        dob: $dob
+        phoneNumber: $phoneNumber
+        division: $_selectedDivisionId
+        district: $_selectedDistrictId
+        upazila: $_selectedUpazilaId
+        password: $password
+        confirmPassword: $confirmPassword
+      ''');
 
-      name: $name
-      nid: $nid
-      email: $email
-      dob: $dob
-      phoneNumber: $phoneNumber
-      division: $_selectedDivisionId
-      district: $_selectedDistrictId
-      password: $password
-      confirmPassword: $confirmPassword
-
-
-''');
-
-    final newUser = RegisterInputModel(
-      name: name,
-      nid: nid,
-      email: email,
-      dob: dob,
-      phone: phoneNumber,
-      division: _selectedDivisionId!,
-      district: _selectedDistrictId!,
-      upazila: _selectedUpazilaId!,
-      password: password,
-      confirmPassword: confirmPassword,
-    );
-
-    lgr.i('newUser: ${newUser.toJson()}');
-
-    ref.read(authControllerProvider.notifier).register(context, data: newUser);
-
-    lgr.i('User registered');
-    // }
+      // Navigate to LoginScreen after successful validation
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    }
   }
 
   Future<void> _selectDate() async {
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now().subtract(Duration(days: 365 * 18)),
+      initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
       firstDate: DateTime(1900),
-      lastDate: DateTime.now().subtract(Duration(days: 365 * 18)),
+      lastDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
     );
     if (picked != null) {
       setState(() {
@@ -106,17 +87,16 @@ class _SignUpScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authControllerProvider);
-    final List<District> districtsForSelectedDivision =
-        _selectedDivisionId != null
-            ? (divisionDistrictsMap[_selectedDivisionId] ?? [])
-            : [];
-    final List<SubDistrict> subDistrictsForSelectedDistrict =
-        _selectedDistrictId != null
-            ? (districtSubdistrictMap[_selectedDistrictId] ?? [])
-            : [];
+    final List<District> districtsForSelectedDivision = _selectedDivisionId != null
+        ? (divisionDistrictsMap[_selectedDivisionId] ?? [])
+        : [];
+    final List<SubDistrict> subDistrictsForSelectedDistrict = _selectedDistrictId != null
+        ? (districtSubdistrictMap[_selectedDistrictId] ?? [])
+        : [];
+
     return Theme(
-      data: AppThemeData.lightThemeData,child: Scaffold(
+      data: AppThemeData.lightThemeData,
+      child: Scaffold(
         appBar: AppBar(),
         body: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -125,16 +105,16 @@ class _SignUpScreenState extends ConsumerState<RegisterScreen> {
               key: _formKey,
               child: Column(
                 children: [
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   Text(
                     'মেম্বার রেজিস্ট্রেশন',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  SizedBox(height: 50.0),
+                  const SizedBox(height: 50.0),
                   TextFormField(
                     controller: _nameController,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       label: Text('নাম*'),
                       hintText: 'এখানে লিখুন',
                     ),
@@ -146,11 +126,11 @@ class _SignUpScreenState extends ConsumerState<RegisterScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   TextFormField(
                     controller: _nidController,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       label: Text('জাতীয় পরিচয়পত্র (NID) নম্বর*'),
                       hintText: 'এখানে লিখুন',
                     ),
@@ -166,11 +146,11 @@ class _SignUpScreenState extends ConsumerState<RegisterScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   TextFormField(
                     controller: _emailController,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       label: Text('ইমেইল*'),
                       hintText: 'এখানে লিখুন',
                     ),
@@ -183,15 +163,12 @@ class _SignUpScreenState extends ConsumerState<RegisterScreen> {
                       }
                       return null;
                     },
-                    onChanged: (textValue) {
-                      //inputOnChange("phone_number", textValue);
-                    },
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   TextFormField(
                     controller: _dobController,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       label: Text('জন্ম তারিখ*'),
                       prefixIcon: Icon(Icons.calendar_today),
                       hintText: 'এখানে লিখুন',
@@ -207,28 +184,20 @@ class _SignUpScreenState extends ConsumerState<RegisterScreen> {
                       if (age < 18) {
                         return 'আপনি ১৮ বছরের কম বয়স্ক';
                       }
-
                       return null;
                     },
-                    onTap: () {
-                      _selectDate();
-                    },
-
-                    onChanged: (textValue) {
-                      //inputOnChange("phone_number", textValue);
-                    },
+                    onTap: _selectDate,
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   TextFormField(
                     controller: _phoneNumberController,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       label: Text('ফোন নম্বর*'),
                       hintText: 'এখানে লিখুন',
                     ),
                     keyboardType: TextInputType.number,
                     validator: (String? value) {
-                      //! fix this for every case
                       if (value?.trim().isEmpty ?? true) {
                         return 'ফোন নম্বর দিন';
                       } else if (value!.length != 11 && !value.contains('+')) {
@@ -243,36 +212,26 @@ class _SignUpScreenState extends ConsumerState<RegisterScreen> {
                           value.length != 14) {
                         return 'ফোন নম্বর ১৪ অক্ষরের হতে হবে';
                       }
-
                       return null;
                     },
-                    onChanged: (textValue) {
-                      //inputOnChange("phone_number", textValue);
-                    },
                   ),
-
-                  SizedBox(height: 20.0),
-
+                  const SizedBox(height: 20.0),
                   DropdownButtonFormField<String>(
                     value: _selectedDivisionId,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'বিভাগ*',
                       labelText: 'বিভাগ',
                       border: OutlineInputBorder(),
                     ),
-                    items:
-                        divisionMap.entries.map((entry) {
-                          return DropdownMenuItem(
-                            value: entry.value, // Store the division ID
-                            child: Text(
-                              entry.key,
-                            ), // Display Bangla division name
-                          );
-                        }).toList(),
+                    items: divisionMap.entries.map((entry) {
+                      return DropdownMenuItem(
+                        value: entry.value,
+                        child: Text(entry.key),
+                      );
+                    }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedDivisionId = value;
-                        // Reset the district selection when division changes.
                         _selectedDistrictId = null;
                       });
                     },
@@ -283,32 +242,27 @@ class _SignUpScreenState extends ConsumerState<RegisterScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   DropdownButtonFormField<String>(
                     value: _selectedDistrictId,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'জেলা*',
                       labelText: 'জেলা',
                       border: OutlineInputBorder(),
                     ),
-                    // If no division is selected, disable the dropdown.
-                    onChanged:
-                        _selectedDivisionId == null
-                            ? null
-                            : (value) {
-                              setState(() {
-                                _selectedDistrictId = value;
-                              });
-                            },
-                    items:
-                        districtsForSelectedDivision.map((district) {
-                          return DropdownMenuItem(
-                            value: district.id, // district ID is stored
-                            child: Text(
-                              district.name,
-                            ), // district name is displayed
-                          );
-                        }).toList(),
+                    onChanged: _selectedDivisionId == null
+                        ? null
+                        : (value) {
+                      setState(() {
+                        _selectedDistrictId = value;
+                      });
+                    },
+                    items: districtsForSelectedDivision.map((district) {
+                      return DropdownMenuItem(
+                        value: district.id,
+                        child: Text(district.name),
+                      );
+                    }).toList(),
                     validator: (value) {
                       if (_selectedDivisionId == null) {
                         return 'প্রথমে বিভাগ নির্বাচন করুন';
@@ -319,33 +273,27 @@ class _SignUpScreenState extends ConsumerState<RegisterScreen> {
                       return null;
                     },
                   ),
-
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   DropdownButtonFormField<String>(
                     value: _selectedUpazilaId,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'উপজেলা*',
                       labelText: 'উপজেলা',
                       border: OutlineInputBorder(),
                     ),
-                    // If no division is selected, disable the dropdown.
-                    onChanged:
-                        _selectedDivisionId == null
-                            ? null
-                            : (value) {
-                              setState(() {
-                                _selectedUpazilaId = value;
-                              });
-                            },
-                    items:
-                        subDistrictsForSelectedDistrict.map((district) {
-                          return DropdownMenuItem(
-                            value: district.id, // district ID is stored
-                            child: Text(
-                              district.name,
-                            ), // district name is displayed
-                          );
-                        }).toList(),
+                    onChanged: _selectedDivisionId == null
+                        ? null
+                        : (value) {
+                      setState(() {
+                        _selectedUpazilaId = value;
+                      });
+                    },
+                    items: subDistrictsForSelectedDistrict.map((district) {
+                      return DropdownMenuItem(
+                        value: district.id,
+                        child: Text(district.name),
+                      );
+                    }).toList(),
                     validator: (value) {
                       if (_selectedDistrictId == null) {
                         return 'প্রথমে জেলা নির্বাচন করুন';
@@ -356,21 +304,20 @@ class _SignUpScreenState extends ConsumerState<RegisterScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   TextFormField(
                     controller: _passwordController,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       label: Text('পাসওয়ার্ড*'),
                       hintText: 'এখানে লিখুন',
                     ),
+                    obscureText: true,
                     keyboardType: TextInputType.text,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'পাসওয়ার্ড দিন';
                       } else if (value.length < 8) {
-                        // at least 8 characters in bengali
-                        // kompokkhe 8 ta character
                         return 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে';
                       } else if (value.contains(RegExp(r'[0-9]')) == false) {
                         return 'পাসওয়ার্ডে অন্ততঃ একটি সংখ্যা থাকতে হবে';
@@ -378,22 +325,21 @@ class _SignUpScreenState extends ConsumerState<RegisterScreen> {
                         return 'পাসওয়ার্ডে অন্ততঃ একটি বড় হাতের অক্ষর থাকতে হবে';
                       } else if (value.contains(RegExp(r'[a-z]')) == false) {
                         return 'পাসওয়ার্ডে অন্ততঃ একটি ছোট হাতের অক্ষর থাকতে হবে';
-                      } else if (value.contains(RegExp(r'[@$!%*?&]')) ==
-                          false) {
+                      } else if (value.contains(RegExp(r'[@$!%*?&]')) == false) {
                         return 'পাসওয়ার্ডে অন্ততঃ একটি বিশেষ অক্ষর থাকতে হবে';
                       }
                       return null;
                     },
                   ),
-                  SizedBox(height: 20.0),
-
+                  const SizedBox(height: 20.0),
                   TextFormField(
                     controller: _confirmPasswordController,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       label: Text('পাসওয়ার্ড নিশ্চিত করুন*'),
                       hintText: 'এখানে লিখুন',
                     ),
+                    obscureText: true,
                     keyboardType: TextInputType.text,
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -404,18 +350,13 @@ class _SignUpScreenState extends ConsumerState<RegisterScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   ElevatedButton(
-                    onPressed: authState.isLoading ? null : _registerUser,
-                    child:
-                        authState.isLoading
-                            ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
-                            : const Text(
-                              'সংরক্ষণ করুন',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                    onPressed: _registerUser,
+                    child: const Text(
+                      'সংরক্ষণ করুন',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),

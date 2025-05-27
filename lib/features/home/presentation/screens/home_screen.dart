@@ -5,7 +5,6 @@ import 'package:bjp_app/core/utils/utils.dart';
 import 'package:bjp_app/dataRepository/global.dart';
 import 'package:bjp_app/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:bjp_app/features/auth/presentation/screens/login_screen.dart';
-import 'package:bjp_app/features/home/presentation/controllers/home_controller.dart';
 import 'package:bjp_app/features/our_discussion/presentation/controllers/discussion_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
