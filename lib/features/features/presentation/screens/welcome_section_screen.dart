@@ -2,6 +2,7 @@
 import 'package:bjp_app/features/features/presentation/screens/Banner_section_screen.dart';
 import 'package:bjp_app/features/features/presentation/screens/Missed_you_section.dart';
 import 'package:bjp_app/features/features/presentation/screens/learning_section.dart';
+import 'package:bjp_app/features/my_learning/presentation/screens/my_learning.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeSectionScreen extends StatefulWidget {
@@ -37,7 +38,12 @@ class _WelcomeSectionScreenState extends State<WelcomeSectionScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Navbar(),
+          ),
           Container(
+
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
             decoration: BoxDecoration(
               border: Border(

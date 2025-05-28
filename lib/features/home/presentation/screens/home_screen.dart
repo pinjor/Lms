@@ -7,6 +7,7 @@ import 'package:bjp_app/features/auth/presentation/controllers/auth_controller.d
 import 'package:bjp_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:bjp_app/features/features/presentation/screens/Banner_section_screen.dart';
 import 'package:bjp_app/features/features/presentation/screens/welcome_section_screen.dart';
+import 'package:bjp_app/features/my_learning/presentation/screens/my_learning.dart';
 import 'package:bjp_app/features/our_discussion/presentation/controllers/discussion_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,9 +29,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     WelcomeSectionScreen(),
-    BannerSectionScreen(),
+
     //Text('Index 0: Home', style: optionStyle),
     Text('Index 1: Business', style: optionStyle),
+    MCQQuestionScreen(),
     Text('Index 2: School', style: optionStyle),
     Text('Index 3: Settings', style: optionStyle),
   ];
@@ -98,33 +100,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Theme(
         data: AppThemeData.lightThemeData,
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            title: Text(
-              _appBarTitle,
-              style: TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            centerTitle: true,
-            actions: [
-              TextButton(
-                onPressed:
-                    () => showLogoutDialog(
-                      context: context,
-                      onPressed: () => _logoutUser(),
-                    ),
-                child: Text(
-                  'Logout',
-                  style: TextStyle(color: AppColors.themeColor, fontSize: 14),
-                ),
-              ),
-            ],
-          ),
+
+          // appBar: AppBar(
+          //   backgroundColor: Colors.white,
+          //   title: Text(
+          //     _appBarTitle,
+          //     style: TextStyle(color: Colors.black, fontSize: 18),
+          //   ),
+          //   centerTitle: true,
+          //   actions: [
+          //     TextButton(
+          //       onPressed:
+          //           () => showLogoutDialog(
+          //             context: context,
+          //             onPressed: () => _logoutUser(),
+          //           ),
+          //       child: Text(
+          //         'Logout',
+          //         style: TextStyle(color: AppColors.themeColor, fontSize: 14),
+          //       ),
+          //     ),
+          //   ],
+          // ),
           body:
           Center(child: _widgetOptions.elementAt(_selectedIndex)),
           bottomNavigationBar: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                icon: Icon(Icons.menu),
+                icon: Icon(Icons.grid_view),
                 label: 'Features',
                 backgroundColor: Colors.red,
               ),
